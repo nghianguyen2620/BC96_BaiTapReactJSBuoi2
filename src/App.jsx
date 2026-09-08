@@ -1,122 +1,107 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useState } from "react";
+import dataGlasses from "./assets/dataGlasses.json";
+import background from "./assets/glassesImage/background.jpg";
+import model from "./assets/glassesImage/model.jpg";
+
+const glassesImages = import.meta.glob(
+  "./assets/glassesImage/*.{png,jpg,jpeg}",
+  { eager: true, import: "default" },
+);
+
+const getGlassesImage = (url) =>
+  glassesImages[`./assets/glassesImage/${url.split("/").pop()}`];
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [selectedGlasses, setSelectedGlasses] = useState(dataGlasses[0]);
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div
+      className="min-vh-100 py-5"
+      style={{ background: `url(${background}) center / cover no-repeat` }}
+    >
+      <div className="container">
+        <h1 className="text-center text-white fs-4 fw-light mb-5">
+          TRY GLASSES APP ONLINE
+        </h1>
 
-      <div className="ticks"></div>
+        {/* Hai người mẫu */}
+        <div className="row justify-content-center g-5 mb-5">
+          <div className="col-6 col-lg-4">
+            <div className="position-relative overflow-hidden shadow">
+              <img
+                src={model}
+                alt="Người mẫu thử kính"
+                className="d-block w-100"
+              />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+              {selectedGlasses && (
+                <>
+                  <img
+                    src={getGlassesImage(selectedGlasses.url)}
+                    alt={selectedGlasses.name}
+                    className="position-absolute start-50 translate-middle-x pe-none"
+                    style={{ top: "26%", width: "63%" }}
+                  />
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+                  <div className="position-absolute bottom-0 start-0 end-0 bg-dark bg-opacity-50 text-white p-3">
+                    <p className="text-warning fw-bold mb-1">
+                      {selectedGlasses.name}
+                    </p>
+                    <p className="small mb-1 lh-sm">{selectedGlasses.desc}</p>
+                    <p className="small fw-semibold mb-0">
+                      {selectedGlasses.price}$
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+
+          <div className="col-6 col-lg-4">
+            <div className="overflow-hidden shadow">
+              <img
+                src={model}
+                alt="Người mẫu chưa thử kính"
+                className="d-block w-100"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Danh sách kính */}
+        <div className="row justify-content-center">
+          <div className="col-lg-9">
+            <div className="bg-white bg-opacity-75 rounded shadow p-3">
+              <div className="row row-cols-3 row-cols-md-6 g-2">
+                {dataGlasses.map((item) => {
+                  const isActive = selectedGlasses?.id === item.id;
+
+                  return (
+                    <div className="col" key={item.id}>
+                      <button
+                        type="button"
+                        aria-pressed={isActive}
+                        onClick={() => setSelectedGlasses(item)}
+                        className={`btn border w-100 h-100 p-2 ${
+                          isActive ? "btn-warning border-warning" : "btn-light"
+                        }`}
+                      >
+                        <img
+                          src={getGlassesImage(item.url)}
+                          alt={item.name}
+                          className="img-fluid"
+                        />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
-export default App
+export default App;
